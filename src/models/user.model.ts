@@ -4,18 +4,11 @@ import { UserInput } from "inputs/user.input.type";
 
 const usersSchema = new Schema(
   {
-    id: {
-      type: Schema.Types.String,
-      required: true,
-      unique: true
-    },
     firstName: {
-      type: Schema.Types.String,
-      required: true,
+      type: Schema.Types.String
     },
     lastName: {
-      type: Schema.Types.String,
-      required: true,
+      type: Schema.Types.String
     },
     email: {
       type: Schema.Types.String,
@@ -23,32 +16,25 @@ const usersSchema = new Schema(
       unique: true,
     },
     phone: {
-      type: Schema.Types.String,
-      required: true
+      type: Schema.Types.String
     },
     dateCreated: {
-      type: Schema.Types.Date,
-      required: true
+      type: Schema.Types.Date
     },
     dateUpdated: {
-      type: Schema.Types.Date,
-      required: true
+      type: Schema.Types.Date
     },
     librarianCreated: {
-      type: Schema.Types.Mixed,
-      required: true
+      type: Schema.Types.Mixed
     },
     librarianUpdated: {
-      type: Schema.Types.Mixed,
-      required: true
+      type: Schema.Types.Mixed
     },
     membership: {
-      type: Schema.Types.Mixed,
-      required: true
+      type: Schema.Types.Mixed
     },
     rent: {
-      type: Schema.Types.Mixed,
-      required: true
+      type: Schema.Types.Mixed
     }
   }
 );

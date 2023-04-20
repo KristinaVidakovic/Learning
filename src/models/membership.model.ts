@@ -4,38 +4,26 @@ import mongoose, { Model, Schema } from "mongoose";
 
 const membershipsSchema = new Schema(
     {
-        id: {
-            type: Schema.Types.String,
-            required: true,
-            unique: true
-        },
         type: {
-            type: Schema.Types.String,
-            required: true
+            type: Schema.Types.String
         },
         price: {
-            type: Schema.Types.Number,
-            required: true
+            type: Schema.Types.Number
         },
         nextPayment: {
-            type: Schema.Types.Date,
-            required: true
+            type: Schema.Types.Date
         },
         dateCreated: {
-            type: Schema.Types.Date,
-            required: true
+            type: Schema.Types.Date
         },
         dateUpdated: {
-            type: Schema.Types.Date,
-            required: true
+            type: Schema.Types.Date
         },
         librarianCreated: {
-            type: Schema.Types.Mixed,
-            required: true
+            type: Schema.Types.Mixed
         },
         librarianUpdated: {
-            type: Schema.Types.Mixed,
-            required: true
+            type: Schema.Types.Mixed
         }
     }
 );

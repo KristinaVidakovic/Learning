@@ -4,18 +4,11 @@ import mongoose, { Model, Schema } from "mongoose";
 
 const librariansSchema = new Schema(
     {
-        id: {
-            type: Schema.Types.String,
-            required: true,
-            unique: true
-        },
         firstName: {
-            type: Schema.Types.String,
-            required: true
+            type: Schema.Types.String
         },
         lastName: {
-            type: Schema.Types.String,
-            required: true
+            type: Schema.Types.String
         }
     }  
 );

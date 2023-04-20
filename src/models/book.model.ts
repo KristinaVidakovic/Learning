@@ -4,54 +4,38 @@ import mongoose, { Model, Schema } from "mongoose";
 
 const booksSchema = new Schema(
     {
-        id: {
-            type: Schema.Types.String,
-            required: true,
-            unique: true
-        },
         title: {
-            type: Schema.Types.Mixed,
-            required: true
+            type: Schema.Types.Mixed
         },
         ISBN: {
-            type: Schema.Types.String,
-            required: true
+            type: Schema.Types.String
         },
         publisher: {
-            type: Schema.Types.String,
-            required: true
+            type: Schema.Types.String
         },
         publicationYear: {
-            type: Schema.Types.Number,
-            required: true
+            type: Schema.Types.Number
         },
         author: {
-            type: Schema.Types.String,
-            required: true
+            type: Schema.Types.String
         },
         genre: {
-            type: Schema.Types.String,
-            required: true
+            type: Schema.Types.String
         },
         occupied: {
-            type: Schema.Types.Boolean,
-            required: true
+            type: Schema.Types.Boolean
         },
         dateCreated: {
-            type: Schema.Types.Date,
-            required: true
+            type: Schema.Types.Date
         },
         dateUpdated: {
-            type: Schema.Types.Date,
-            required: true
+            type: Schema.Types.Date
         },
         librarianCreated: {
-            type: Schema.Types.Mixed,
-            required: true
+            type: Schema.Types.Mixed
         },
         librarianUpdated: {
-            type: Schema.Types.Mixed,
-            required: true
+            type: Schema.Types.Mixed
         }
     }
 );

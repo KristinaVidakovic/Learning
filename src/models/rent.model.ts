@@ -4,18 +4,11 @@ import mongoose, { Model, Schema } from "mongoose";
 
 const rentsSchema = new Schema(
     {
-        id: {
-            type: Schema.Types.String,
-            required: true,
-            unique: true
-        },
         dateCreated: {
-            type: Schema.Types.Date,
-            required: true
+            type: Schema.Types.Date
         },
         deadline: {
-            type: Schema.Types.Date,
-            required: true
+            type: Schema.Types.Date
         }
     }
 );

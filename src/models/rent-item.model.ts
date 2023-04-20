@@ -4,22 +4,14 @@ import mongoose, { Model, Schema } from "mongoose";
 
 const rentItemsSchema = new Schema(
     {
-        id: {
-            type: Schema.Types.String,
-            required: true,
-            unique: true
-        },
         quantity: {
-            type: Schema.Types.Number,
-            required: true
+            type: Schema.Types.Number
         },
         rent: {
-            type: Schema.Types.Mixed,
-            required: true
+            type: Schema.Types.Mixed
         },
         book: {
-            type: Schema.Types.Mixed,
-            required: true
+            type: Schema.Types.Mixed
         }
     }
 );
