@@ -104,7 +104,7 @@ const updateBook = async (req: Request, res: Response) => {
             librarianUpdated: librarianUpdated
         };
     
-        const bookUpdated = await Book.findOneAndUpdate(bookInput);
+        const bookUpdated = await Book.findOneAndUpdate({_id : id}, {$set : bookInput, $inc: {__v: 1}}, {new: true});
     
         return res.status(200).json({ book: bookUpdated });
 
