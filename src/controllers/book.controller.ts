@@ -56,4 +56,62 @@ const createBook = async (req: Request, res: Response) => {
     }
 }
 
-export {createBook};
+/**
+ * @route PUT /book/:id
+ * @desc Update a book 
+ * @return {Object} book
+ */
+
+const updateBook = async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const { title, ISBN, publisher, publicationYear, author, genre, librarianUpdated } = req.body;
+
+    const book = await Book.findById(id);
+
+    if (!book) {
+        return res.status(400).json({ message: "Book with provided ID doesn't exists!" });
+    }
+
+    try {
+        const name = librarianUpdated.split(" ");
+        const firstName = name[0];
+        const lastName = name[1];
+
+        if (!firstName || !lastName) {
+            return res.status(400).json({ message: "Provide librarian full name!" });
+        }
+
+        const lib = await Librarian.findOne({
+            "firstName": firstName,
+            "lastName": lastName
+        });
+        
+        if (!lib) {
+            return res.status(400).json({ message: "Provided librarian doesn't exist." });
+        }
+
+        const bookInput: BookInput = {
+            title: !title ? book.title : title,
+            ISBN: !ISBN ? book.ISBN: ISBN,
+            publisher: !publisher ? book.publisher : publisher,
+            publicationYear: !publicationYear ? book.publicationYear : publicationYear,
+            author: !author ? book.author : author,
+            genre: !genre ? book.genre : genre,
+            occupied: book.occupied,
+            dateCreated: book.dateCreated,
+            dateUpdated: new Date(),
+            librarianCreated: book.librarianCreated,
+            librarianUpdated: librarianUpdated
+        };
+    
+        const bookUpdated = await Book.findOneAndUpdate(bookInput);
+    
+        return res.status(200).json({ book: bookUpdated });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error." });
+    }
+};
+
+export {createBook, updateBook};
