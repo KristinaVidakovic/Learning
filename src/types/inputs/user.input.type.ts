@@ -1,7 +1,6 @@
 import { UserDocument } from "../documents/user.document.type";
 
 export type UserInput = {
-  id: UserDocument["id"];
   firstName: UserDocument["firstName"];
   lastName: UserDocument["lastName"];
   email: UserDocument["email"];

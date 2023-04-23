@@ -1,7 +1,6 @@
 import { BookDocument } from "documents/book.document.type";
 
 export type BookInput = {
-    id: BookDocument["id"];
     title: BookDocument["title"];
     ISBN: BookDocument["ISBN"];
     publisher: BookDocument["publisher"];

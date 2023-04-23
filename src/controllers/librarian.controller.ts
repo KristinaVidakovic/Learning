@@ -10,27 +10,32 @@ import { Librarian, LibrarianInput } from "../models/librarian.model";
 const createLibrarian = async (req: Request, res: Response) => {
   const { firstName, lastName } = req.body;
 
-  if (firstName == '' || lastName == '' || firstName == null || lastName == null) {
+  if (!firstName || !lastName) {
     return res.status(400).json({ message: "Missing first name and/or last name!" });
   }
 
-  const lib = await Librarian.findOne({
-    "firstName": req.body.firstName,
-    "lastName": req.body.lastName
-  });
-
-  if (lib != null) {
-    return res.status(400).json({ message: "Librarian with the provided data already exist." });
-  }
+  try {
+    const lib = await Librarian.findOne({
+      "firstName": req.body.firstName,
+      "lastName": req.body.lastName
+    });
   
-  const librarianInput: LibrarianInput = {
-    firstName,
-    lastName
-  };
-
-  const librarianCreated = await Librarian.create(librarianInput);
-
-  return res.status(201).json({ librarian: librarianCreated });
-}
+    if (lib) {
+      return res.status(400).json({ message: "Librarian with the provided data already exist." });
+    }
+    
+    const librarianInput: LibrarianInput = {
+      firstName,
+      lastName
+    };
+  
+    const librarianCreated = await Librarian.create(librarianInput);
+  
+    return res.status(201).json({ librarian: librarianCreated });
+  } catch(err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
 
 export {createLibrarian};

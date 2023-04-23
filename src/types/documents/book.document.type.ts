@@ -1,8 +1,7 @@
-import { Date, Document } from "mongoose";
+import { Document } from "mongoose";
 import { LibrarianDocument } from "./librarian.document.type";
 
 export type BookDocument = Document & {
-    id: string;
     title: string;
     ISBN: string;
     publisher: string;
@@ -12,6 +11,6 @@ export type BookDocument = Document & {
     occupied: boolean;
     dateCreated: Date;
     dateUpdated: Date;
-    librarianCreated: LibrarianDocument;//interface
-    librarianUpdated: LibrarianDocument;//interface
+    librarianCreated: LibrarianDocument;
+    librarianUpdated: LibrarianDocument;
 }

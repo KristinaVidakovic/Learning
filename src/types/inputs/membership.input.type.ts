@@ -1,7 +1,6 @@
 import { MembershipDocument } from "documents/membership.document.type";
 
 export type MembershipInput = {
-    id: MembershipDocument["id"];
     type: MembershipDocument["type"];
     price: MembershipDocument["price"];
     nextPayment: MembershipDocument["nextPayment"];
