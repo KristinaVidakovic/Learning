@@ -131,6 +131,23 @@ const getBook = async (req: Request, res: Response) => {
     }
   
     return res.status(200).json({ book: book });
-  }
+};
 
-export {createBook, updateBook, getBook};
+/**
+ * @route GET /book
+ * @desc Get all books 
+ * @return {Object} book
+ */
+
+const getAllBooks = async (req: Request, res: Response) => {
+
+    const books = await Book.find();
+
+    if (Array.isArray(books) && books.length === 0) {
+        return res.status(204).json({});
+    }
+  
+    return res.status(200).json({ books: books});
+};
+
+export {createBook, updateBook, getBook, getAllBooks};
