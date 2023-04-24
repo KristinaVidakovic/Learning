@@ -7,6 +7,7 @@ export type MembershipDocument = Document & {
     nextPayment: Date;
     dateCreated: Date;
     dateUpdated: Date;
-    librarianCreated: LibrarianDocument;//interface
-    librarianUpdated: LibrarianDocument;//interface
+    librarianCreated: LibrarianDocument;
+    librarianUpdated: LibrarianDocument;
+    deleted: boolean;
 }

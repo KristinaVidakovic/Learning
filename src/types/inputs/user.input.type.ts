@@ -11,4 +11,5 @@ export type UserInput = {
   librarianUpdated: UserDocument["librarianUpdated"];
   membership: UserDocument["membership"];
   rent: UserDocument["rent"];
+  deleted: UserDocument["deleted"];
 };

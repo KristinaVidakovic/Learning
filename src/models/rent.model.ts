@@ -7,8 +7,14 @@ const rentsSchema = new Schema(
         dateCreated: {
             type: Schema.Types.Date
         },
+        dateUpdated: {
+            type: Schema.Types.Date
+        },
         deadline: {
             type: Schema.Types.Date
+        },
+        deleted: {
+            type: Schema.Types.Boolean
         }
     }
 );

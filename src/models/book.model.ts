@@ -36,6 +36,9 @@ const booksSchema = new Schema(
         },
         librarianUpdated: {
             type: Schema.Types.Mixed
+        },
+        deleted: {
+            type: Schema.Types.Boolean
         }
     }
 );

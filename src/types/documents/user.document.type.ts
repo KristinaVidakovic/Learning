@@ -14,4 +14,5 @@ export type UserDocument = Document & {
   librarianUpdated: LibrarianDocument;
   membership: MembershipDocument;
   rent: RentDocument;
+  deleted: boolean;
 };

@@ -8,4 +8,5 @@ export type MembershipInput = {
     dateUpdated: MembershipDocument["dateUpdated"];
     libararianCreated: MembershipDocument["librarianCreated"];
     librarianUpdated: MembershipDocument["librarianUpdated"];
+    deleted: MembershipDocument["deleted"];
 };

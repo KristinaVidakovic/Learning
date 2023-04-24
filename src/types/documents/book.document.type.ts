@@ -13,4 +13,5 @@ export type BookDocument = Document & {
     dateUpdated: Date;
     librarianCreated: LibrarianDocument;
     librarianUpdated: LibrarianDocument;
+    deleted: boolean;
 }

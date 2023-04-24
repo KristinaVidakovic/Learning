@@ -44,7 +44,8 @@ const createBook = async (req: Request, res: Response) => {
             dateCreated: new Date(),
             dateUpdated: new Date(),
             librarianCreated,
-            librarianUpdated: librarianCreated
+            librarianUpdated: librarianCreated,
+            deleted: false
         };
     
         const bookCreated = await Book.create(bookInput);
@@ -101,7 +102,8 @@ const updateBook = async (req: Request, res: Response) => {
             dateCreated: book.dateCreated,
             dateUpdated: new Date(),
             librarianCreated: book.librarianCreated,
-            librarianUpdated: librarianUpdated
+            librarianUpdated: librarianUpdated,
+            deleted: book.deleted
         };
     
         const bookUpdated = await Book.findOneAndUpdate({_id : id}, {$set : bookInput, $inc: {__v: 1}}, {new: true});

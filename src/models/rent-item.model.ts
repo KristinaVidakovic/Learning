@@ -12,6 +12,9 @@ const rentItemsSchema = new Schema(
         },
         book: {
             type: Schema.Types.Mixed
+        },
+        deleted: {
+            type: Schema.Types.Boolean
         }
     }
 );

@@ -5,4 +5,5 @@ export type RentItemDocument = Document & {
     quantity: number;
     rent: RentItemDocument;
     book: BookDocument;
+    deleted: boolean;
 }

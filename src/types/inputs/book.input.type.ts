@@ -12,4 +12,5 @@ export type BookInput = {
     dateUpdated: BookDocument["dateUpdated"];
     librarianCreated: BookDocument["librarianCreated"];
     librarianUpdated: BookDocument["librarianUpdated"];
+    deleted: BookDocument["deleted"];
 };
