@@ -114,4 +114,21 @@ const updateBook = async (req: Request, res: Response) => {
     }
 };
 
-export {createBook, updateBook};
+/**
+ * @route GET /book/:id
+ * @desc Get a book 
+ * @return {Object} book
+ */
+
+const getBook = async (req: Request, res: Response) => {
+
+    const book = await Book.findById(req.params.id);
+
+    if (!book) {
+        return res.status(400).json({ message: "Book with provided ID doesn't exists!" });
+    }
+  
+    return res.status(200).json({ book: book });
+  }
+
+export {createBook, updateBook, getBook};
