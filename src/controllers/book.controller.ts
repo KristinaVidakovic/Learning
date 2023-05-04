@@ -9,6 +9,7 @@ import { Librarian } from "../models/librarian.model";
  */
 
 const createBook = async (req: Request, res: Response) => {
+
     const { title, ISBN, publisher, publicationYear, author, genre, librarianCreated } = req.body;
 
     if (!title || !ISBN || !publicationYear || !publisher || !author || !genre || !librarianCreated) {
@@ -64,6 +65,7 @@ const createBook = async (req: Request, res: Response) => {
  */
 
 const updateBook = async (req: Request, res: Response) => {
+
     const id = req.params.id;
     const { title, ISBN, publisher, publicationYear, author, genre, librarianUpdated } = req.body;
 
@@ -134,7 +136,7 @@ const getBook = async (req: Request, res: Response) => {
 };
 
 /**
- * @route GET /book
+ * @route GET /books
  * @desc Get all books 
  * @return {Object} book
  */
@@ -174,4 +176,25 @@ const getAllBooks = async (req: Request, res: Response) => {
     return res.status(200).json({ books: books});
 };
 
-export {createBook, updateBook, getBook, getAllBooks};
+/**
+ * @route DELETE /book/:id
+ * @desc Delete a book
+ * @return {Object} book
+ */
+
+const deleteBook = async (req: Request, res: Response) => {
+
+    const id = req.params.id;
+
+    const book = await Book.findById(id);
+
+    if (book.deleted==true) {
+        return res.status(400).json({ message: "Book already deleted" });
+    }
+
+    const deletedBook = await Book.findByIdAndUpdate({_id : id}, {$set : {deleted: true}, $inc: {__v: 1}}, {new: true});
+
+    return res.status(200).json({ deleted: deletedBook });
+};
+
+export {createBook, updateBook, getBook, getAllBooks, deleteBook};
