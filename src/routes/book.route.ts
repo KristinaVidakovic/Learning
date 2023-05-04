@@ -7,7 +7,7 @@ const bookRoute = () => {
     router.post("/book", createBook);
     router.put("/book/:id", updateBook);
     router.get("/book/:id", getBook);
-    router.get("/book", getAllBooks);
+    router.get("/books", getAllBooks);
 
     return router;
 };

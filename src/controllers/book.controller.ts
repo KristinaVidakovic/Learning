@@ -141,7 +141,31 @@ const getBook = async (req: Request, res: Response) => {
 
 const getAllBooks = async (req: Request, res: Response) => {
 
-    const books = await Book.find();
+    const { title, publisher, publicationYear, author, genre, occupied, ISBN } = req.query;
+
+    let books = await Book.find();
+    
+    if (title) {
+        books = books.filter(b => b.title == title);
+    } 
+    if (publisher) {
+        books = books.filter(b => b.publisher == publisher);
+    }
+    if (publicationYear) {
+        books = books.filter(b => b.publicationYear == Number(publicationYear));
+    }
+    if (author) {
+        books = books.filter(b => b.author == author);
+    }
+    if (genre) {
+        books = books.filter(b => b.genre == genre);
+    }
+    if (occupied) {
+        books = books.filter(b => b.occupied == (occupied=='true' ? true : false));
+    }
+    if (ISBN) {
+        books = books.filter(b => b.ISBN == ISBN);
+    }
 
     if (Array.isArray(books) && books.length === 0) {
         return res.status(204).json({});
