@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Book, BookInput } from "../models/book.model";
 import { Librarian } from "../models/librarian.model";
+import { existLibrarian } from "./librarian.controller";
 
 /**
  * @route POST /book
@@ -17,20 +18,13 @@ const createBook = async (req: Request, res: Response) => {
     }
 
     try{
-        const name = librarianCreated.split(" ");
-        const firstName = name[0];
-        const lastName = name[1];
+        const isExistingLibrarian = await existLibrarian(librarianCreated);
 
-        if (!firstName || !lastName) {
+        if (isExistingLibrarian === "Provide librarian full name!") {
             return res.status(400).json({ message: "Provide librarian full name!" });
         }
 
-        const lib = await Librarian.findOne({
-            "firstName": firstName,
-            "lastName": lastName
-        });
-        
-        if (!lib) {
+        if (isExistingLibrarian === "Provided librarian doesn't exist.") {
             return res.status(400).json({ message: "Provided librarian doesn't exist." });
         }
 
@@ -76,20 +70,13 @@ const updateBook = async (req: Request, res: Response) => {
     }
 
     try {
-        const name = librarianUpdated.split(" ");
-        const firstName = name[0];
-        const lastName = name[1];
+        const isExistingLibrarian = await existLibrarian(librarianUpdated);
 
-        if (!firstName || !lastName) {
+        if (isExistingLibrarian === "Provide librarian full name!") {
             return res.status(400).json({ message: "Provide librarian full name!" });
         }
 
-        const lib = await Librarian.findOne({
-            "firstName": firstName,
-            "lastName": lastName
-        });
-        
-        if (!lib) {
+        if (isExistingLibrarian === "Provided librarian doesn't exist.") {
             return res.status(400).json({ message: "Provided librarian doesn't exist." });
         }
 

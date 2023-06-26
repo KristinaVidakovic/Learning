@@ -10,8 +10,8 @@ const membershipsSchema = new Schema(
         price: {
             type: Schema.Types.Number
         },
-        nextPayment: {
-            type: Schema.Types.Date
+        currency: {
+            type: Schema.Types.String
         },
         dateCreated: {
             type: Schema.Types.Date

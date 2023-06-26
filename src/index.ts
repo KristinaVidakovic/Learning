@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import { connectToDatabase } from "./database";
 import { librarianRoute } from "./routes/librarian.route";
 import { bookRoute } from "./routes/book.route";
+import { userRoute } from "./routes/user.route";
+import { membershipRoute } from "./routes/membership.route";
 
 const app = express();
 dotenv.config();
@@ -14,6 +16,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/", librarianRoute());
 app.use("/", bookRoute());
+app.use("/", userRoute());
+app.use("/", membershipRoute());
 
 app.listen(PORT, async() => {
     await connectToDatabase();

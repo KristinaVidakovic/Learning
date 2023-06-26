@@ -1,10 +1,10 @@
-import { Date, Document } from "mongoose";
+import { Document } from "mongoose";
 import { LibrarianDocument } from "./librarian.document.type";
 
 export type MembershipDocument = Document & {
     type: string;
     price: number;
-    nextPayment: Date;
+    currency: string;
     dateCreated: Date;
     dateUpdated: Date;
     librarianCreated: LibrarianDocument;

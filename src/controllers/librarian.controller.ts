@@ -38,4 +38,25 @@ const createLibrarian = async (req: Request, res: Response) => {
   }
 };
 
-export {createLibrarian};
+const existLibrarian = async(req: string) => {
+  const name = req.split(" ");
+  const firstName = name[0];
+  const lastName = name[1];
+
+  if (!firstName || !lastName) {
+    return "Provide librarian full name!";
+  }
+
+  const librarian = await Librarian.findOne({
+    firstName: firstName,
+    lastName: lastName
+  });
+        
+  if (!librarian) {
+    return "Provided librarian doesn't exist.";
+  }
+
+  return librarian;
+};
+
+export {createLibrarian, existLibrarian};
