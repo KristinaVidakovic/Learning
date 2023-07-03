@@ -175,6 +175,10 @@ const deleteBook = async (req: Request, res: Response) => {
 
     const book = await Book.findById(id);
 
+    if (book == null) {
+        return res.status(400).json({ message: `Couldn't find book with ID ${id}` });
+    }
+
     if (book.deleted==true) {
         return res.status(400).json({ message: "Book already deleted" });
     }
