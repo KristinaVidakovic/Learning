@@ -106,4 +106,21 @@ const updateMembership = async(req: Request, res: Response) => {
     }
 };
 
-export {createMembership, updateMembership};
+/**
+ * @route GET /memberships
+ * @desc Get all memberships
+ * @return {Object} membership
+ */
+
+const getMemberships = async(req: Request, res: Response) => {
+
+    let memberships = await Membership.find();
+
+    if (Array.isArray(memberships) && memberships.length == 0) {
+        return res.status(204).json({});
+    }
+
+    return res.status(200).json({ memberships: memberships });
+};
+
+export {createMembership, updateMembership, getMemberships};
