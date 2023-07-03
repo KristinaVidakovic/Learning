@@ -123,4 +123,30 @@ const getMemberships = async(req: Request, res: Response) => {
     return res.status(200).json({ memberships: memberships });
 };
 
-export {createMembership, updateMembership, getMemberships};
+
+/**
+ * @route DELETE /membership/:id
+ * @desc Delete a membership
+ * @return {Object} membership
+ */
+
+const deleteMembership = async(req: Request, res: Response) => {
+
+    const id = req.params.id;
+
+    const membership = await Membership.findById(id);
+
+    if (membership == null) {
+        return res.status(400).json({ message: `Couldn't find membership with ID ${id}` });
+    }
+
+    if (membership.deleted === true) {
+        return res.status(400).json({ message: "Membership already deleted" });
+    }
+
+    const deletedMembership = await Membership.findByIdAndUpdate({_id : id}, {$set : {deleted: true}, $inc: {__v: 1}}, {new: true});
+
+    return res.status(200).json({ deleted: deletedMembership });
+};
+
+export {createMembership, updateMembership, getMemberships, deleteMembership};
