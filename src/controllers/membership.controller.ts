@@ -69,7 +69,7 @@ const updateMembership = async(req: Request, res: Response) => {
     const id = req.params.id;
     const { type, price, currency, librarianUpdated } = req.body;
 
-    if (!type || !price || !librarianUpdated || !currency) {
+    if (!librarianUpdated) {
         return res.status(400).json({ message: "Missing values!" });
     }
 

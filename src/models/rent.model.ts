@@ -13,6 +13,9 @@ const rentsSchema = new Schema(
         deadline: {
             type: Schema.Types.Date
         },
+        user: {
+            type: Schema.Types.Mixed
+        },
         deleted: {
             type: Schema.Types.Boolean
         }

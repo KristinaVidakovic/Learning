@@ -33,9 +33,6 @@ const usersSchema = new Schema(
     membership: {
       type: Schema.Types.Mixed
     },
-    rent: {
-      type: Schema.Types.Mixed
-    },
     deleted: {
       type: Schema.Types.Boolean
     }
