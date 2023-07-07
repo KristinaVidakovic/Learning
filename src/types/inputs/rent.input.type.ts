@@ -6,4 +6,6 @@ export type RentInput = {
     deadline: RentDocument["deadline"];
     user: RentDocument["user"];
     deleted: RentDocument["deleted"];
+    librarianCreated: RentDocument["librarianCreated"];
+    librarianUpdated: RentDocument["librarianUpdated"];
 };

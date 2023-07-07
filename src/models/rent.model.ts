@@ -18,6 +18,12 @@ const rentsSchema = new Schema(
         },
         deleted: {
             type: Schema.Types.Boolean
+        },
+        librarianCreated: {
+            type: Schema.Types.Mixed
+        },
+        librarianUpdated: {
+            type: Schema.Types.Mixed
         }
     }
 );

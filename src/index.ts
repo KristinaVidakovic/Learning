@@ -5,6 +5,7 @@ import { librarianRoute } from "./routes/librarian.route";
 import { bookRoute } from "./routes/book.route";
 import { userRoute } from "./routes/user.route";
 import { membershipRoute } from "./routes/membership.route";
+import { rentRoute } from "./routes/rent.route";
 
 const app = express();
 dotenv.config();
@@ -18,6 +19,7 @@ app.use("/", librarianRoute());
 app.use("/", bookRoute());
 app.use("/", userRoute());
 app.use("/", membershipRoute());
+app.use("/", rentRoute());
 
 app.listen(PORT, async() => {
     await connectToDatabase();

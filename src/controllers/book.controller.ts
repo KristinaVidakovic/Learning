@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { Book, BookInput } from "../models/book.model";
-import { Librarian } from "../models/librarian.model";
 import { existLibrarian } from "./librarian.controller";
 
 /**
