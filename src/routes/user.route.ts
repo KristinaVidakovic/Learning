@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createUser, getAllUsers, getUser, updateUser } from "../controllers/user.controller";
+import { createUser, deleteUser, getAllUsers, getUser, updateUser } from "../controllers/user.controller";
 
 const userRoute = () => {
     const router = Router();
@@ -8,6 +8,7 @@ const userRoute = () => {
     router.put("/user/:id", updateUser);
     router.get("/user/:id", getUser);
     router.get("/users", getAllUsers);
+    router.delete("/user/:id", deleteUser);
 
     return router;
 };

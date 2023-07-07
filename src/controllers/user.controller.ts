@@ -42,7 +42,8 @@ const createUser = async (req: Request, res: Response) => {
     }
 
     const mem = await Membership.findOne({
-        type: membership
+        type: membership,
+        deleted: false
     });
 
     if (!mem) {
@@ -57,9 +58,9 @@ const createUser = async (req: Request, res: Response) => {
             phone,
             dateCreated: new Date(),
             dateUpdated: new Date(),
-            librarianCreated,
-            librarianUpdated: librarianCreated,
-            membership,
+            librarianCreated: isExistingLibrarian,
+            librarianUpdated: isExistingLibrarian,
+            membership: mem,
             deleted: false
         };
 
@@ -104,7 +105,8 @@ const updateUser = async (req: Request, res: Response) => {
     }
 
     const mem = await Membership.findOne({
-        type: membership
+        type: membership,
+        deleted: false
     });
 
     if (!mem) {
@@ -120,9 +122,9 @@ const updateUser = async (req: Request, res: Response) => {
             dateCreated: user.dateCreated,
             dateUpdated: new Date(),
             librarianCreated: user.librarianCreated,
-            librarianUpdated: librarianUpdated,
-            membership: !membership ? user.membership : membership,
-            deleted: false
+            librarianUpdated: isExistingLibrarian,
+            membership: !membership ? user.membership : mem,
+            deleted: user.deleted
         };
 
         const userUpdated = await User.findOneAndUpdate({ _id: id }, { $set: userInput, $inc: { __v: 1 } }, { new: true });
@@ -186,6 +188,12 @@ const getAllUsers = async(req: Request, res: Response) => {
         users = users.filter(u => u.membership.type == membership);
     }
     if (librarianCreated) {
+        const isExistingLibrarian = await existLibrarian(librarianCreated.toString());
+
+        if (isExistingLibrarian === "Provide librarian full name!") {
+            return res.status(400).json({ message: "Provide librarian full name!" });
+        }
+
         users = users.filter(u => u.librarianCreated.firstName.concat(" ", u.librarianCreated.lastName) == librarianCreated);
     }
 
@@ -196,4 +204,29 @@ const getAllUsers = async(req: Request, res: Response) => {
     return res.status(200).json({ users: users });
 };
 
-export { createUser, updateUser, getUser, getAllUsers };
+/**
+ * @route DELETE /user/:id
+ * @desc Delete a user
+ * @return {Object} user
+ */
+
+const deleteUser = async(req: Request, res: Response) => {
+
+    const id = req.params.id;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+        return res.status(400).json({ message: "User with provided ID doesn't exist." });
+    }
+
+    if (user.deleted) {
+        return res.status(400).json({ message: "User already deleted." });
+    }
+
+    const deletedUser = await User.findByIdAndUpdate({ _id: id }, { $set: { deleted: true }, $inc: { __v: 1 } }, { new: true });
+
+    return res.status(200).json({ user: deletedUser });
+};
+
+export { createUser, updateUser, getUser, getAllUsers, deleteUser };

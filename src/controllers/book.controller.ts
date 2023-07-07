@@ -38,8 +38,8 @@ const createBook = async (req: Request, res: Response) => {
             occupied: false,
             dateCreated: new Date(),
             dateUpdated: new Date(),
-            librarianCreated,
-            librarianUpdated: librarianCreated,
+            librarianCreated: isExistingLibrarian,
+            librarianUpdated: isExistingLibrarian,
             deleted: false
         };
 
@@ -91,7 +91,7 @@ const updateBook = async (req: Request, res: Response) => {
             dateCreated: book.dateCreated,
             dateUpdated: new Date(),
             librarianCreated: book.librarianCreated,
-            librarianUpdated: librarianUpdated,
+            librarianUpdated: isExistingLibrarian,
             deleted: book.deleted
         };
 
@@ -175,11 +175,11 @@ const deleteBook = async (req: Request, res: Response) => {
 
     const book = await Book.findById(id);
 
-    if (book == null) {
+    if (!book) {
         return res.status(400).json({ message: `Couldn't find book with ID ${id}` });
     }
 
-    if (book.deleted == true) {
+    if (book.deleted) {
         return res.status(400).json({ message: "Book already deleted" });
     }
 

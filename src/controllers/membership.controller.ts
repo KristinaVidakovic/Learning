@@ -43,8 +43,8 @@ const createMembership = async (req: Request, res: Response) => {
             currency,
             dateCreated: new Date(),
             dateUpdated: new Date(),
-            librarianCreated,
-            librarianUpdated: librarianCreated,
+            librarianCreated: isExistingLibrarian,
+            librarianUpdated: isExistingLibrarian,
             deleted: false
         };
 
@@ -97,7 +97,7 @@ const updateMembership = async (req: Request, res: Response) => {
             dateCreated: membership.dateCreated,
             dateUpdated: new Date(),
             librarianCreated: membership.librarianCreated,
-            librarianUpdated: librarianUpdated,
+            librarianUpdated: isExistingLibrarian,
             deleted: membership.deleted
         };
 
@@ -140,11 +140,11 @@ const deleteMembership = async (req: Request, res: Response) => {
 
     const membership = await Membership.findById(id);
 
-    if (membership == null) {
+    if (!membership) {
         return res.status(400).json({ message: `Couldn't find membership with ID ${id}` });
     }
 
-    if (membership.deleted === true) {
+    if (membership.deleted) {
         return res.status(400).json({ message: "Membership already deleted" });
     }
 
