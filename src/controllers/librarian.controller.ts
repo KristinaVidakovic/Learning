@@ -14,31 +14,31 @@ const createLibrarian = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Missing first name and/or last name!" });
   }
 
+  const lib = await Librarian.findOne({
+    "firstName": req.body.firstName,
+    "lastName": req.body.lastName
+  });
+
+  if (lib) {
+    return res.status(400).json({ message: "Librarian with the provided data already exist." });
+  }
+
   try {
-    const lib = await Librarian.findOne({
-      "firstName": req.body.firstName,
-      "lastName": req.body.lastName
-    });
-  
-    if (lib) {
-      return res.status(400).json({ message: "Librarian with the provided data already exist." });
-    }
-    
     const librarianInput: LibrarianInput = {
       firstName,
       lastName
     };
-  
+
     const librarianCreated = await Librarian.create(librarianInput);
-  
+
     return res.status(201).json({ librarian: librarianCreated });
-  } catch(err) {
+  } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Internal server error." });
   }
 };
 
-const existLibrarian = async(req: string) => {
+const existLibrarian = async (req: string) => {
   const name = req.split(" ");
   const firstName = name[0];
   const lastName = name[1];
@@ -51,7 +51,7 @@ const existLibrarian = async(req: string) => {
     firstName: firstName,
     lastName: lastName
   });
-        
+
   if (!librarian) {
     return "Provided librarian doesn't exist.";
   }
@@ -59,4 +59,4 @@ const existLibrarian = async(req: string) => {
   return librarian;
 };
 
-export {createLibrarian, existLibrarian};
+export { createLibrarian, existLibrarian };

@@ -9,7 +9,7 @@ import { existLibrarian } from "./librarian.controller";
  * @return {Object} user
  */
 
-const createUser = async(req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response) => {
 
     const { firstName, lastName, email, phone, librarianCreated, membership } = req.body;
 
@@ -17,39 +17,39 @@ const createUser = async(req: Request, res: Response) => {
         return res.status(400).json({ message: "Missing values!" });
     }
 
+    const isExistingLibrarian = await existLibrarian(librarianCreated);
+
+    if (isExistingLibrarian === "Provide librarian full name!") {
+        return res.status(400).json({ message: "Provide librarian full name!" });
+    }
+
+    if (isExistingLibrarian === "Provided librarian doesn't exist.") {
+        return res.status(400).json({ message: "Provided librarian doesn't exist." });
+    }
+
+    const expression: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+    if (!expression.test(email)) {
+        return res.status(400).json({ message: "Provide valid email." })
+    }
+
+    const user = await User.findOne({
+        email: email
+    });
+
+    if (user) {
+        return res.status(400).json({ message: "User with that email already exists." });
+    }
+
+    const mem = await Membership.findOne({
+        type: membership
+    });
+
+    if (!mem) {
+        return res.status(400).json({ message: "Provided membership type doesn't exist." });
+    }
+
     try {
-        const isExistingLibrarian = await existLibrarian(librarianCreated);
-
-        if (isExistingLibrarian === "Provide librarian full name!") {
-            return res.status(400).json({ message: "Provide librarian full name!" });
-        }
-
-        if (isExistingLibrarian === "Provided librarian doesn't exist.") {
-            return res.status(400).json({ message: "Provided librarian doesn't exist." });
-        }
-        
-        const expression: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-
-        if (!expression.test(email)) {
-            return res.status(400).json({ message: "Provide valid email." })
-        }
-
-        const user = await User.findOne({
-            email: email
-        });
-
-        if (user) {
-            return res.status(400).json({ message: "User with that email already exists." });
-        }
-
-        const mem = await Membership.findOne({
-            type: membership
-        });
-
-        if (!mem) {
-            return res.status(400).json({ message: "Provided membership type doesn't exist." });
-        }
-
         const userInput: UserInput = {
             firstName,
             lastName,
@@ -78,7 +78,7 @@ const createUser = async(req: Request, res: Response) => {
  * @return {Object} user
  */
 
-const updateUser = async(req: Request, res: Response) => {
+const updateUser = async (req: Request, res: Response) => {
 
     const id = req.params.id;
     const { firstName, lastName, email, phone, librarianUpdated, membership } = req.body;
@@ -106,7 +106,7 @@ const updateUser = async(req: Request, res: Response) => {
     const mem = await Membership.findOne({
         type: membership
     });
-    
+
     if (!mem) {
         return res.status(400).json({ message: "Provided membership doesn't exist." });
     }
@@ -124,14 +124,76 @@ const updateUser = async(req: Request, res: Response) => {
             membership: !membership ? user.membership : membership,
             deleted: false
         };
-    
-        const userUpdated = await User.findOneAndUpdate({_id : id}, {$set : userInput, $inc: {__v: 1}}, {new: true});
+
+        const userUpdated = await User.findOneAndUpdate({ _id: id }, { $set: userInput, $inc: { __v: 1 } }, { new: true });
 
         return res.status(200).json({ user: userUpdated });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: "Internal server error." });
     }
-}; 
+};
 
-export {createUser, updateUser};
+/**
+ * @route GET /user/:id
+ * @desc Get a user 
+ * @return {Object} user
+ */
+
+const getUser = async (req: Request, res: Response) => {
+
+    const id = req.params.id;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+        return res.status(400).json({ message: "User with provided ID doesn't exist." });
+    }
+
+    try {
+        return res.status(200).json({ user: user });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error!" });
+    }
+};
+
+/**
+ * @route GET /users
+ * @desc Get all users
+ * @return {Object} user
+ */
+
+const getAllUsers = async(req: Request, res: Response) => {
+
+    const { firstName, lastName, email, phone, membership, librarianCreated } = req.query;
+
+    let users = await User.find();
+
+    if (firstName) {
+        users = users.filter(u => u.firstName == firstName);
+    }
+    if (lastName) {
+        users = users.filter(u => u.lastName == lastName);
+    }
+    if (email) {
+        users = users.filter(u => u.email == email);
+    }
+    if (phone) {
+        users = users.filter(u => u.phone == phone);
+    }
+    if (membership) {
+        users = users.filter(u => u.membership.type == membership);
+    }
+    if (librarianCreated) {
+        users = users.filter(u => u.librarianCreated.firstName.concat(" ", u.librarianCreated.lastName) == librarianCreated);
+    }
+
+    if (Array.isArray(users) && users.length == 0) {
+        return res.status(204).json({});
+    }
+
+    return res.status(200).json({ users: users });
+};
+
+export { createUser, updateUser, getUser, getAllUsers };

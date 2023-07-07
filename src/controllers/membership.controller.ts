@@ -8,7 +8,7 @@ import { existLibrarian } from "./librarian.controller";
  * @return {Object} membership
  */
 
-const createMembership = async(req: Request, res: Response) => {
+const createMembership = async (req: Request, res: Response) => {
 
     const { type, price, currency, librarianCreated } = req.body;
 
@@ -16,27 +16,27 @@ const createMembership = async(req: Request, res: Response) => {
         return res.status(400).json({ message: "Missing values!" });
     }
 
+    const isExistingLibrarian = await existLibrarian(librarianCreated);
+
+    if (isExistingLibrarian === "Provide librarian full name!") {
+        return res.status(400).json({ message: "Provide librarian full name!" });
+    }
+
+    if (isExistingLibrarian === "Provided librarian doesn't exist.") {
+        return res.status(400).json({ message: "Provided librarian doesn't exist." });
+    }
+
+    const mem = await Membership.findOne({
+        type: type,
+        price: price,
+        currency: currency
+    });
+
+    if (mem) {
+        return res.status(400).json({ message: "Provided membership exists." });
+    }
+
     try {
-        const isExistingLibrarian = await existLibrarian(librarianCreated);
-
-        if (isExistingLibrarian === "Provide librarian full name!") {
-            return res.status(400).json({ message: "Provide librarian full name!" });
-        }
-
-        if (isExistingLibrarian === "Provided librarian doesn't exist.") {
-            return res.status(400).json({ message: "Provided librarian doesn't exist." });
-        }
-        
-        const mem = await Membership.findOne({
-            type: type,
-            price: price,
-            currency: currency
-        });
-
-        if (mem) {
-            return res.status(400).json({ message: "Provided membership exists." });
-        }
-
         const membershipInput: MembershipInput = {
             type,
             price,
@@ -64,7 +64,7 @@ const createMembership = async(req: Request, res: Response) => {
  * @return {Object} membership
  */
 
-const updateMembership = async(req: Request, res: Response) => {
+const updateMembership = async (req: Request, res: Response) => {
 
     const id = req.params.id;
     const { type, price, currency, librarianUpdated } = req.body;
@@ -79,17 +79,17 @@ const updateMembership = async(req: Request, res: Response) => {
         return res.status(400).json({ message: "Memebrship with provided ID doesn't exists!" });
     }
 
+    const isExistingLibrarian = await existLibrarian(librarianUpdated);
+
+    if (isExistingLibrarian === "Provide librarian full name!") {
+        return res.status(400).json({ message: "Provide librarian full name!" });
+    }
+
+    if (isExistingLibrarian === "Provided librarian doesn't exist.") {
+        return res.status(400).json({ message: "Provided librarian doesn't exist." });
+    }
+
     try {
-        const isExistingLibrarian = await existLibrarian(librarianUpdated);
-
-        if (isExistingLibrarian === "Provide librarian full name!") {
-            return res.status(400).json({ message: "Provide librarian full name!" });
-        }
-
-        if (isExistingLibrarian === "Provided librarian doesn't exist.") {
-            return res.status(400).json({ message: "Provided librarian doesn't exist." });
-        }
-
         const membershipInput: MembershipInput = {
             type: !type ? membership.type : type,
             price: !price ? membership.price : price,
@@ -101,7 +101,7 @@ const updateMembership = async(req: Request, res: Response) => {
             deleted: membership.deleted
         };
 
-        const membershipUpdated = await Membership.findOneAndUpdate({_id : id}, {$set : membershipInput, $inc: {__v: 1}}, {new: true});
+        const membershipUpdated = await Membership.findOneAndUpdate({ _id: id }, { $set: membershipInput, $inc: { __v: 1 } }, { new: true });
 
         return res.status(200).json({ membership: membershipUpdated });
     } catch (err) {
@@ -116,7 +116,7 @@ const updateMembership = async(req: Request, res: Response) => {
  * @return {Object} membership
  */
 
-const getMemberships = async(req: Request, res: Response) => {
+const getMemberships = async (req: Request, res: Response) => {
 
     let memberships = await Membership.find();
 
@@ -134,7 +134,7 @@ const getMemberships = async(req: Request, res: Response) => {
  * @return {Object} membership
  */
 
-const deleteMembership = async(req: Request, res: Response) => {
+const deleteMembership = async (req: Request, res: Response) => {
 
     const id = req.params.id;
 
@@ -148,9 +148,9 @@ const deleteMembership = async(req: Request, res: Response) => {
         return res.status(400).json({ message: "Membership already deleted" });
     }
 
-    const deletedMembership = await Membership.findByIdAndUpdate({_id : id}, {$set : {deleted: true}, $inc: {__v: 1}}, {new: true});
+    const deletedMembership = await Membership.findByIdAndUpdate({ _id: id }, { $set: { deleted: true }, $inc: { __v: 1 } }, { new: true });
 
     return res.status(200).json({ deleted: deletedMembership });
 };
 
-export {createMembership, updateMembership, getMemberships, deleteMembership};
+export { createMembership, updateMembership, getMemberships, deleteMembership };

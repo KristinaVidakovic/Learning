@@ -17,17 +17,17 @@ const createBook = async (req: Request, res: Response) => {
         return res.status(400).json({ message: "Missing values!" });
     }
 
-    try{
-        const isExistingLibrarian = await existLibrarian(librarianCreated);
+    const isExistingLibrarian = await existLibrarian(librarianCreated);
 
-        if (isExistingLibrarian === "Provide librarian full name!") {
-            return res.status(400).json({ message: "Provide librarian full name!" });
-        }
+    if (isExistingLibrarian === "Provide librarian full name!") {
+        return res.status(400).json({ message: "Provide librarian full name!" });
+    }
 
-        if (isExistingLibrarian === "Provided librarian doesn't exist.") {
-            return res.status(400).json({ message: "Provided librarian doesn't exist." });
-        }
+    if (isExistingLibrarian === "Provided librarian doesn't exist.") {
+        return res.status(400).json({ message: "Provided librarian doesn't exist." });
+    }
 
+    try {
         const bookInput: BookInput = {
             title,
             ISBN,
@@ -42,11 +42,11 @@ const createBook = async (req: Request, res: Response) => {
             librarianUpdated: librarianCreated,
             deleted: false
         };
-    
+
         const bookCreated = await Book.create(bookInput);
-    
+
         return res.status(201).json({ book: bookCreated });
-    } catch(err) {
+    } catch (err) {
         console.error(err);
         return res.status(500).json({ message: "Internal server error!" });
     }
@@ -69,20 +69,20 @@ const updateBook = async (req: Request, res: Response) => {
         return res.status(400).json({ message: "Book with provided ID doesn't exists!" });
     }
 
+    const isExistingLibrarian = await existLibrarian(librarianUpdated);
+
+    if (isExistingLibrarian === "Provide librarian full name!") {
+        return res.status(400).json({ message: "Provide librarian full name!" });
+    }
+
+    if (isExistingLibrarian === "Provided librarian doesn't exist.") {
+        return res.status(400).json({ message: "Provided librarian doesn't exist." });
+    }
+
     try {
-        const isExistingLibrarian = await existLibrarian(librarianUpdated);
-
-        if (isExistingLibrarian === "Provide librarian full name!") {
-            return res.status(400).json({ message: "Provide librarian full name!" });
-        }
-
-        if (isExistingLibrarian === "Provided librarian doesn't exist.") {
-            return res.status(400).json({ message: "Provided librarian doesn't exist." });
-        }
-
         const bookInput: BookInput = {
             title: !title ? book.title : title,
-            ISBN: !ISBN ? book.ISBN: ISBN,
+            ISBN: !ISBN ? book.ISBN : ISBN,
             publisher: !publisher ? book.publisher : publisher,
             publicationYear: !publicationYear ? book.publicationYear : publicationYear,
             author: !author ? book.author : author,
@@ -94,9 +94,9 @@ const updateBook = async (req: Request, res: Response) => {
             librarianUpdated: librarianUpdated,
             deleted: book.deleted
         };
-    
-        const bookUpdated = await Book.findOneAndUpdate({_id : id}, {$set : bookInput, $inc: {__v: 1}}, {new: true});
-    
+
+        const bookUpdated = await Book.findOneAndUpdate({ _id: id }, { $set: bookInput, $inc: { __v: 1 } }, { new: true });
+
         return res.status(200).json({ book: bookUpdated });
 
     } catch (err) {
@@ -118,7 +118,7 @@ const getBook = async (req: Request, res: Response) => {
     if (!book) {
         return res.status(400).json({ message: "Book with provided ID doesn't exists!" });
     }
-  
+
     return res.status(200).json({ book: book });
 };
 
@@ -133,10 +133,10 @@ const getAllBooks = async (req: Request, res: Response) => {
     const { title, publisher, publicationYear, author, genre, occupied, ISBN } = req.query;
 
     let books = await Book.find();
-    
+
     if (title) {
         books = books.filter(b => b.title == title);
-    } 
+    }
     if (publisher) {
         books = books.filter(b => b.publisher == publisher);
     }
@@ -150,7 +150,7 @@ const getAllBooks = async (req: Request, res: Response) => {
         books = books.filter(b => b.genre == genre);
     }
     if (occupied) {
-        books = books.filter(b => b.occupied == (occupied=='true' ? true : false));
+        books = books.filter(b => b.occupied == (occupied == 'true' ? true : false));
     }
     if (ISBN) {
         books = books.filter(b => b.ISBN == ISBN);
@@ -159,8 +159,8 @@ const getAllBooks = async (req: Request, res: Response) => {
     if (Array.isArray(books) && books.length === 0) {
         return res.status(204).json({});
     }
-  
-    return res.status(200).json({ books: books});
+
+    return res.status(200).json({ books: books });
 };
 
 /**
@@ -179,13 +179,13 @@ const deleteBook = async (req: Request, res: Response) => {
         return res.status(400).json({ message: `Couldn't find book with ID ${id}` });
     }
 
-    if (book.deleted==true) {
+    if (book.deleted == true) {
         return res.status(400).json({ message: "Book already deleted" });
     }
 
-    const deletedBook = await Book.findByIdAndUpdate({_id : id}, {$set : {deleted: true}, $inc: {__v: 1}}, {new: true});
+    const deletedBook = await Book.findByIdAndUpdate({ _id: id }, { $set: { deleted: true }, $inc: { __v: 1 } }, { new: true });
 
     return res.status(200).json({ deleted: deletedBook });
 };
 
-export {createBook, updateBook, getBook, getAllBooks, deleteBook};
+export { createBook, updateBook, getBook, getAllBooks, deleteBook };
