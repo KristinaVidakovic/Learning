@@ -126,4 +126,22 @@ const updateRent = async(req: Request, res: Response) => {
 
 };
 
-export { createRent, updateRent };
+/**
+ * @route GET /rent/:id
+ * @desc GET a rent
+ * @return {Object} rent
+ */
+
+const getRent = async(req: Request, res: Response) => {
+
+    const id = req.params.id;
+    const rent = await Rent.findById(id);
+
+    if (!rent) {
+        return res.status(400).json({ message: "Rent with provided ID doesn't exist" });
+    }
+
+    return res.status(200).json({ rent: rent });
+};
+
+export { createRent, updateRent, getRent };
