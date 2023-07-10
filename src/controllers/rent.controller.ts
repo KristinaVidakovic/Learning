@@ -11,9 +11,9 @@ import { existLibrarian } from "./librarian.controller";
 
 const createRent = async(req: Request, res: Response) => {
 
-    const { deadline, userId, librarianCreated } = req.body;
+    const { deadline, user, librarianCreated } = req.body;
 
-    if (!deadline || !userId || !librarianCreated) {
+    if (!deadline || !user || !librarianCreated) {
         return res.status(400).json({ message: "Missing values!" });
     }
 
@@ -22,12 +22,12 @@ const createRent = async(req: Request, res: Response) => {
         return res.status(400).json({ message: "Deadline can't be in the past." });
     }
 
-    const user = await User.findOne({
-        _id: userId,
+    const u = await User.findOne({
+        _id: user,
         deleted: false
     });
 
-    if (!user) {
+    if (!u) {
         return res.status(400).json({ message: "Provided user doesn't exist." });
     }
 
@@ -46,7 +46,7 @@ const createRent = async(req: Request, res: Response) => {
             dateCreated: new Date(),
             dateUpdated: new Date(),
             deadline,
-            user,
+            user: u,
             deleted: false,
             librarianCreated: isExistingLibrarian,
             librarianUpdated: isExistingLibrarian
@@ -61,4 +61,69 @@ const createRent = async(req: Request, res: Response) => {
     }
 };
 
-export { createRent };
+/**
+ * @route PUT /rent/:id
+ * @desc Update a rent
+ * @return {Object} rent
+ */
+
+const updateRent = async(req: Request, res: Response) => {
+
+    const id = req.params.id;
+    const { deadline, librarianUpdated, user } = req.body;
+    const rent = await Rent.findById(id);
+
+    if (!librarianUpdated) {
+        return res.status(400).json({ message: "Missing values" });
+    }
+
+    if (!rent) {
+        return res.status(400).json({ message: "Rent with provided ID doesn't exist" });
+    }
+
+    const date = new Date(deadline);
+    if (date <= new Date()) {
+        return res.status(400).json({ message: "Deadline can't be in the past." });
+    }
+
+    const isExistingLibrarian = await existLibrarian(librarianUpdated);
+
+    if (isExistingLibrarian === "Provide librarian full name!") {
+        return res.status(400).json({ message: "Provide librarian full name!" });
+    }
+
+    if (isExistingLibrarian === "Provided librarian doesn't exist.") {
+        return res.status(400).json({ message: "Provided librarian doesn't exist." });
+    }
+
+    const u = await User.findOne({
+        _id: user,
+        deleted: false
+    });
+
+    if (!u) {
+        return res.status(400).json({ message: "Provided user doesn't exist." });
+    }
+
+    try {
+        const rentInput : RentInput = {
+            dateCreated: rent.dateCreated,
+            dateUpdated: new Date(),
+            deadline: !deadline ? rent.deadline : deadline,
+            user: !u ? rent.user : u,
+            deleted: rent.deleted,
+            librarianCreated: rent.librarianCreated,
+            librarianUpdated: isExistingLibrarian
+        };
+
+        const updatedRent = await Rent.findByIdAndUpdate({ _id: id }, { $set: rentInput, $inc: { __v: 1 } }, { new: true });
+
+        return res.status(200).json({ rent: updatedRent });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+
+};
+
+export { createRent, updateRent };
