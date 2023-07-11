@@ -186,4 +186,28 @@ const getAllRents = async(req:Request, res:Response) => {
     return res.status(200).json({ rents: rents });
 };
 
-export { createRent, updateRent, getRent, getAllRents };
+/**
+ * @route DELETE /rent/:id
+ * @desc DELETE a rent
+ * @return {Object} rent
+ */
+
+const deleteRent = async(req: Request, res: Response) => {
+
+    const id = req.params.id;
+    const rent = await Rent.findById(id);
+
+    if (!rent) {
+        return res.status(400).json({ message: "Rent with provided ID doesn't exist" });
+    }
+
+    if (rent.deleted) {
+        return res.status(400).json({ message: "Rent already deleted" });
+    }
+
+    const deletedRent = await Rent.findByIdAndUpdate({ _id: id }, { $set: { deleted: true }, $inc: { __v: 1 } }, { new: true });
+
+    return res.status(200).json({ rent: deletedRent });
+};
+
+export { createRent, updateRent, getRent, getAllRents, deleteRent };
