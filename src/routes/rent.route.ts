@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createRent, getRent, updateRent } from "../controllers/rent.controller";
+import { createRent, getAllRents, getRent, updateRent } from "../controllers/rent.controller";
 
 const rentRoute = () => {
     const route = Router();
@@ -7,6 +7,7 @@ const rentRoute = () => {
     route.post("/rent", createRent);
     route.put("/rent/:id", updateRent);
     route.get("/rent/:id", getRent);
+    route.get("/rents", getAllRents);
 
     return route;
 };

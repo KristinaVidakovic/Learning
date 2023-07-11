@@ -144,4 +144,46 @@ const getRent = async(req: Request, res: Response) => {
     return res.status(200).json({ rent: rent });
 };
 
-export { createRent, updateRent, getRent };
+/**
+ * @route GET /rents
+ * @desc GET all rents
+ * @return {Object} rent
+ */
+
+const getAllRents = async(req:Request, res:Response) => {
+
+    const { dateCreated, deadline, user, librarianCreated } = req.query;
+
+    let rents = await Rent.find();
+
+    if (librarianCreated) {
+        const isExistingLibrarian = await existLibrarian(librarianCreated.toString());
+
+        if (isExistingLibrarian === "Provide librarian full name!") {
+            return res.status(400).json({ message: "Provide librarian full name!" });
+        }
+
+        rents = rents.filter(r => r.librarianCreated.firstName.concat(" ", r.librarianCreated.lastName) == librarianCreated);
+    }
+    if (user) {
+        rents = rents.filter(r => r.user._id == user);
+    }
+    if (deadline) {
+        const date = new Date(deadline.toString());
+        rents = rents.filter(r => r.deadline.getDate() == date.getDate() && 
+            r.deadline.getMonth() == date.getMonth() && r.deadline.getFullYear() == date.getFullYear());
+    }
+    if (dateCreated) {
+        const date = new Date(dateCreated.toString());
+        rents = rents.filter(r => r.dateCreated.getDate() == date.getDate() && 
+            r.dateCreated.getMonth() == date.getMonth() && r.dateCreated.getFullYear() == date.getFullYear());
+    }
+
+    if (Array.isArray(rents) && rents.length === 0) {
+        return res.status(204).json({});
+    }
+
+    return res.status(200).json({ rents: rents });
+};
+
+export { createRent, updateRent, getRent, getAllRents };
