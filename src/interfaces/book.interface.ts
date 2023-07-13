@@ -12,4 +12,5 @@ export interface Book {
     dateUpdated: Date;
     librarianCreated: Librarian;
     librarianUpdated: Librarian;
+    deleted: boolean;
 }

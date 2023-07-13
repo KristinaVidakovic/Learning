@@ -3,6 +3,7 @@ import { Rent } from "./rent.interface";
 
 export interface RentItem {
     quantity: number;
-    rent: Rent;
+    rent: string;
     book: Book;
+    deleted: boolean;
 }

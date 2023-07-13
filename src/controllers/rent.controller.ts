@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { User } from "../models/user.model";
 import { Rent, RentInput } from "../models/rent.model";
+import { Book } from "../models/book.model";
 import { existLibrarian } from "./librarian.controller";
+import { RentItem } from "../models/rent-item.model";
 
 /**
  * @route POST /rent
@@ -11,7 +13,7 @@ import { existLibrarian } from "./librarian.controller";
 
 const createRent = async(req: Request, res: Response) => {
 
-    const { deadline, user, librarianCreated } = req.body;
+    const { deadline, user, items, librarianCreated } = req.body;
 
     if (!deadline || !user || !librarianCreated) {
         return res.status(400).json({ message: "Missing values!" });
@@ -41,6 +43,25 @@ const createRent = async(req: Request, res: Response) => {
         return res.status(400).json({ message: "Provided librarian doesn't exist." });
     }
 
+    let newItems = new Array();
+
+    if (Array.isArray(items) && items.length !== 0) {
+        await Promise.all(items.map(async i => {
+            if (!i.book || !i.quantity) {
+                return res.status(400).json({ message: "Missing values in rent item!" });
+            }
+            const book = await Book.findById(i.book);
+            if (!book || book.deleted) {
+                return res.status(400).json({ message: "Book with provided ID doesn't exist" });
+            }
+            let newItem = new RentItem();
+            newItem.book = book;
+            newItem.quantity = i.quantity;
+            newItem.deleted = false;
+            newItems.push(newItem);
+        }));
+    }
+
     try {
         const rentInput : RentInput = {
             dateCreated: new Date(),
@@ -48,11 +69,17 @@ const createRent = async(req: Request, res: Response) => {
             deadline,
             user: u,
             deleted: false,
+            items: newItems,
             librarianCreated: isExistingLibrarian,
             librarianUpdated: isExistingLibrarian
         };
 
         const rentCreated = await Rent.create(rentInput);
+
+        newItems.forEach(i => {
+            i.rent = rentCreated.id;
+            RentItem.create(i);
+        })
 
         return res.status(201).json({ rent: rentCreated });
     } catch (err) {
@@ -70,7 +97,7 @@ const createRent = async(req: Request, res: Response) => {
 const updateRent = async(req: Request, res: Response) => {
 
     const id = req.params.id;
-    const { deadline, librarianUpdated, user } = req.body;
+    const { deadline, librarianUpdated, user, items } = req.body;
     const rent = await Rent.findById(id);
 
     if (!librarianUpdated) {
@@ -112,6 +139,7 @@ const updateRent = async(req: Request, res: Response) => {
             deadline: !deadline ? rent.deadline : deadline,
             user: !u ? rent.user : u,
             deleted: rent.deleted,
+            items,
             librarianCreated: rent.librarianCreated,
             librarianUpdated: isExistingLibrarian
         };

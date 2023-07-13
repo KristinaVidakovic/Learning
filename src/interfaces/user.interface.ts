@@ -12,5 +12,5 @@ export interface User {
     librarianCreated: Librarian;
     librarianUpdated: Librarian;
     membership: Membership;
-    rent: Rent;
+    deleted: boolean;
 }

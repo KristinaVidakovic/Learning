@@ -8,7 +8,7 @@ const rentItemsSchema = new Schema(
             type: Schema.Types.Number
         },
         rent: {
-            type: Schema.Types.Mixed
+            type: Schema.Types.String
         },
         book: {
             type: Schema.Types.Mixed

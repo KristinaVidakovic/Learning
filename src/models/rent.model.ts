@@ -16,6 +16,9 @@ const rentsSchema = new Schema(
         user: {
             type: Schema.Types.Mixed
         },
+        items: {
+            type: Schema.Types.Array
+        },
         deleted: {
             type: Schema.Types.Boolean
         },
