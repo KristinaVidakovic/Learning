@@ -97,7 +97,7 @@ const createRent = async(req: Request, res: Response) => {
 const updateRent = async(req: Request, res: Response) => {
 
     const id = req.params.id;
-    const { deadline, librarianUpdated, user, items } = req.body;
+    const { deadline, librarianUpdated, user } = req.body;
     const rent = await Rent.findById(id);
 
     if (!librarianUpdated) {
@@ -139,7 +139,7 @@ const updateRent = async(req: Request, res: Response) => {
             deadline: !deadline ? rent.deadline : deadline,
             user: !u ? rent.user : u,
             deleted: rent.deleted,
-            items,
+            items: rent.items,
             librarianCreated: rent.librarianCreated,
             librarianUpdated: isExistingLibrarian
         };
