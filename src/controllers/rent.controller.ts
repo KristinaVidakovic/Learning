@@ -47,7 +47,7 @@ const createRent = async(req: Request, res: Response) => {
 
     if (Array.isArray(items) && items.length !== 0) {
         await Promise.all(items.map(async i => {
-            if (!i.book || !i.quantity) {
+            if (!i.book) {
                 return res.status(400).json({ message: "Missing values in rent item!" });
             }
             const book = await Book.findById(i.book);
@@ -56,7 +56,6 @@ const createRent = async(req: Request, res: Response) => {
             }
             let newItem = new RentItem();
             newItem.book = book;
-            newItem.quantity = i.quantity;
             newItem.deleted = false;
             newItems.push(newItem);
         }));

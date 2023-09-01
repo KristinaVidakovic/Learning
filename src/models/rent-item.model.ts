@@ -4,9 +4,6 @@ import mongoose, { Model, Schema } from "mongoose";
 
 const rentItemsSchema = new Schema(
     {
-        quantity: {
-            type: Schema.Types.Number
-        },
         rent: {
             type: Schema.Types.String
         },
